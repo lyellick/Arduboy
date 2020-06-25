@@ -6,13 +6,15 @@
 
 Arduboy2 arduboy;
 
+BeepPin1 beep;
+
 enum Direction { UpLeft, UpRight, DownLeft, DownRight, Default };
+
+Direction direction;
 
 int x_min, x_max, x_center, x_current, y_min, y_max, y_center, y_current, speed;
 
 bool paused;
-
-Direction direction;
 
 const int CHAR_WIDTH = 6;
 const int CHAR_HEIGHT = 8;
@@ -47,6 +49,7 @@ void setup() {
     paused = false;
 
     arduboy.begin();
+    beep.begin();
     arduboy.clear();
 }
 
@@ -124,6 +127,8 @@ void loop() {
     if (!arduboy.nextFrame()) {
         return;
     }
+
+    beep.timer();
     arduboy.pollButtons();
 
     if (arduboy.justPressed(UP_BUTTON)) {
