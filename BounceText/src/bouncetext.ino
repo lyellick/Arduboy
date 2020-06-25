@@ -6,8 +6,6 @@
 
 Arduboy2 arduboy;
 
-BeepPin1 beep;
-
 enum Direction { UpLeft, UpRight, DownLeft, DownRight, Default };
 
 Direction direction;
@@ -49,7 +47,6 @@ void setup() {
     paused = false;
 
     arduboy.begin();
-    beep.begin();
     arduboy.clear();
 }
 
@@ -128,7 +125,6 @@ void loop() {
         return;
     }
 
-    beep.timer();
     arduboy.pollButtons();
 
     if (arduboy.justPressed(UP_BUTTON)) {
