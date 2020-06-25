@@ -31,6 +31,6 @@ void loop() {
     }
 
     arduboy.clear();
-    ScreenText(arduboy, "Title").addToScreenBuffer(Center);
+
     arduboy.display();
 }

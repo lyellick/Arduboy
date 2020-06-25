@@ -1,13 +1,28 @@
+/*
+Usage:
+    ScreenText(arduboy, "TL").addToScreenBuffer(TopLeft);
+    ScreenText(arduboy, "TM").addToScreenBuffer(TopMiddle);
+    ScreenText(arduboy, "TR").addToScreenBuffer(TopRight);
+    ScreenText(arduboy, "ML").addToScreenBuffer(MiddleLeft);
+    ScreenText(arduboy, "CTR").addToScreenBuffer(Center);
+    ScreenText(arduboy, "MR").addToScreenBuffer(MiddleRight);
+    ScreenText(arduboy, "BL").addToScreenBuffer(BottomLeft);
+    ScreenText(arduboy, "BM").addToScreenBuffer(BottomMiddle);
+    ScreenText(arduboy, "BR").addToScreenBuffer(BottomRight);
+*/
+
 #include <Arduboy2.h>
 
 enum ScreenTextLocation {
     TopLeft,
+    TopMiddle,
     TopRight,
     MiddleLeft,
+    Center,
     MiddleRight,
     BottomLeft,
+    BottomMiddle,
     BottomRight,
-    Center,
     Default
 };
 
@@ -34,8 +49,32 @@ class ScreenText {
 
     void setTextToLocation(ScreenTextLocation location) {
         switch (location) {
+            case TopLeft:
+                arduboy.setCursor(x_min, y_min);
+                break;
+            case TopMiddle:
+                arduboy.setCursor(x_center, y_min);
+                break;
+            case TopRight:
+                arduboy.setCursor(x_max, y_min);
+                break;
+            case MiddleLeft:
+                arduboy.setCursor(x_min, y_center);
+                break;
             case Center:
                 arduboy.setCursor(x_center, y_center);
+                break;
+            case MiddleRight:
+                arduboy.setCursor(x_max, y_center);
+                break;
+            case BottomLeft:
+                arduboy.setCursor(x_min, y_max);
+                break;
+            case BottomMiddle:
+                arduboy.setCursor(x_center, y_max);
+                break;
+            case BottomRight:
+                arduboy.setCursor(x_max, y_max);
                 break;
             default:
                 break;
