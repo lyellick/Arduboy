@@ -50,12 +50,11 @@ void setup() {
     arduboy.clear();
 }
 
-void moveTitle(int speed) {
+void moveTitle() {
     arduboy.clear();
     arduboy.setCursor(x_current, y_current);
     arduboy.print(title);
     arduboy.display();
-    delay(speed);
 }
 
 void nextPosition() {
@@ -122,14 +121,18 @@ void nextPosition() {
 }
 
 void loop() {
+    if (!arduboy.nextFrame()) {
+        return;
+    }
     arduboy.pollButtons();
+
     if (arduboy.justPressed(UP_BUTTON)) {
-        if (speed != 0) {
+        if (speed > 1) {
             speed--;
         }
     }
     if (arduboy.justPressed(DOWN_BUTTON)) {
-        speed += 5;
+        speed += 1;
     }
     if (arduboy.justPressed(A_BUTTON)) {
         speed = 10;
@@ -137,8 +140,10 @@ void loop() {
     if (arduboy.justPressed(B_BUTTON)) {
         paused = !paused;
     }
-    if (!paused) {
-        nextPosition();
-        moveTitle(speed);
+    if (arduboy.everyXFrames(speed)) {
+        if (!paused) {
+            nextPosition();
+            moveTitle();
+        }
     }
 }
