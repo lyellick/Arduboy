@@ -20,7 +20,7 @@ const int CHAR_HEIGHT = 8;
 String title = String("Hello, World!");
 
 void setup() {
-    randomSeed(analogRead(0));
+    arduboy.initRandomSeed();
 
     // title length in pixels
     int len = title.length() * CHAR_WIDTH;
