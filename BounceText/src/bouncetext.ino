@@ -10,11 +10,11 @@ enum class Direction { UpLeft, UpRight, DownLeft, DownRight, Default };
 
 Direction direction;
 
-uint8_t x_min;
+uint8_t 0;
 uint8_t x_max;
 uint8_t x_center;
 uint8_t x_current;
-uint8_t y_min;
+uint8_t 0;
 uint8_t y_max;
 uint8_t y_center;
 uint8_t y_current;
@@ -33,10 +33,6 @@ void setup() {
     // title length in pixels
     uint8_t len = title.length() * character_width;
 
-    // axis minimums
-    x_min = 0;
-    y_min = 0;
-
     // axis maximums
     x_max = WIDTH - len;
     y_max = HEIGHT - character_height;
@@ -46,7 +42,7 @@ void setup() {
     y_center = (HEIGHT - (character_height)) / 2;
 
     // current cursor initialization
-    x_current = random(0, x_min);
+    x_current = random(0, 0);
     y_current = random(0, y_max);
 
     // set inital direction
@@ -66,25 +62,25 @@ void setup() {
 void nextPosition() {
     switch (direction) {
         case Direction::UpLeft:
-            if (y_current != y_min && x_current != x_min) {
+            if (y_current != 0 && x_current != 0) {
                 --y_current;
                 --x_current;
             } else {
-                if (y_current == y_min) {
+                if (y_current == 0) {
                     direction = Direction::DownLeft;
                 }
 
-                if (x_current == x_min) {
+                if (x_current == 0) {
                     direction = Direction::UpRight;
                 }
             }
             break;
         case Direction::UpRight:
-            if (y_current != y_min && x_current != x_max) {
+            if (y_current != 0 && x_current != x_max) {
                 --y_current;
                 ++x_current;
             } else {
-                if (y_current == y_min) {
+                if (y_current == 0) {
                     direction = Direction::DownRight;
                 }
 
@@ -94,7 +90,7 @@ void nextPosition() {
             }
             break;
         case Direction::DownLeft:
-            if (y_current != y_max && x_current != x_min) {
+            if (y_current != y_max && x_current != 0) {
                 ++y_current;
                 --x_current;
             } else {
@@ -102,7 +98,7 @@ void nextPosition() {
                     direction = Direction::UpLeft;
                 }
 
-                if (x_current == x_min) {
+                if (x_current == 0) {
                     direction = Direction::DownRight;
                 }
             }
