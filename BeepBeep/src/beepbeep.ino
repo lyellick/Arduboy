@@ -4,14 +4,14 @@ Arduboy2 arduboy;
 
 #include "screentext.h"
 
-constexpr int8_t application_frame_rate = 30;
+constexpr int8_t applicationFrameRate = 30;
 
-int8_t current_pin;
+int8_t currentPin;
 
 void setup() {
-    current_pin = 1;
+    currentPin = 1;
 
-    arduboy.setFrameRate(application_frame_rate);
+    arduboy.setFrameRate(applicationFrameRate);
     arduboy.begin();
     arduboy.clear();
 }
@@ -31,12 +31,12 @@ void loop() {
     }
     // change pin
     if (arduboy.justPressed(A_BUTTON)) {
-        switch (current_pin) {
+        switch (currentPin) {
             case 1:
-                ++current_pin;
+                ++currentPin;
                 break;
             case 2:
-                --current_pin;
+                --currentPin;
                 break;
             default:
                 break;
@@ -51,7 +51,7 @@ void loop() {
     String title = "BeepBeep";
     ScreenText(arduboy, title).addToScreenBuffer(ScreenLocation::TopMiddle);
 
-    String pin = "Pin: " + String(current_pin);
+    String pin = "Pin: " + String(currentPin);
     ScreenText(arduboy, pin).addToScreenBuffer(ScreenLocation::BottomRight);
     arduboy.display();
 }
