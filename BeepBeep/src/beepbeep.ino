@@ -4,13 +4,41 @@ Arduboy2 arduboy;
 
 #include "screentext.h"
 
+int8_t currentPin = 1;
+String title = "BeepBeep";
+String pinOneFrequencyBar = "";
+String pinTwoFrequencyBar = "";
 constexpr int8_t applicationFrameRate = 30;
 
-int8_t currentPin;
+void updateTextPointsToBuffer() {
+    ScreenText(arduboy, title).addToScreenBuffer(ScreenLocation::TopMiddle);
+
+    ScreenText(arduboy, "(" + String(currentPin) + ")")
+        .addToScreenBuffer(ScreenLocation::TopRight);
+
+    switch (currentPin) {
+        case 1:
+            ScreenText(arduboy, "[" + pinOneFrequencyBar + "]")
+                .addToScreenBuffer(ScreenLocation::Center);
+
+            ScreenText(arduboy, "Frequency: " +
+                                    String(pinOneFrequencyBar.length() * 1000))
+                .addToScreenBuffer(ScreenLocation::BottomLeft);
+            break;
+        case 2:
+            ScreenText(arduboy, "[" + pinTwoFrequencyBar + "]")
+                .addToScreenBuffer(ScreenLocation::Center);
+
+            ScreenText(arduboy, "Frequency: " +
+                                    String(pinTwoFrequencyBar.length() * 1000))
+                .addToScreenBuffer(ScreenLocation::BottomLeft);
+            break;
+        default:
+            break;
+    }
+}
 
 void setup() {
-    currentPin = 1;
-
     arduboy.setFrameRate(applicationFrameRate);
     arduboy.begin();
     arduboy.clear();
@@ -25,33 +53,82 @@ void loop() {
 
     // increase tone frequency
     if (arduboy.justPressed(UP_BUTTON)) {
-    }
-    // decrease tone frequency
-    if (arduboy.justPressed(DOWN_BUTTON)) {
-    }
-    // change pin
-    if (arduboy.justPressed(A_BUTTON)) {
         switch (currentPin) {
             case 1:
-                ++currentPin;
+                if (String("[" + pinOneFrequencyBar + "]").length() !=
+                    maxScreenWidth) {
+                    pinOneFrequencyBar += "=";
+                }
                 break;
             case 2:
-                --currentPin;
+                if (String("[" + pinTwoFrequencyBar + "]").length() !=
+                    maxScreenWidth) {
+                    pinTwoFrequencyBar += "=";
+                }
                 break;
             default:
                 break;
         }
     }
-    // reset
-    if (arduboy.justPressed(B_BUTTON)) {
+
+    // decrease tone frequency
+    if (arduboy.justPressed(DOWN_BUTTON)) {
+        String fullBar = "";
+        switch (currentPin) {
+            case 1:
+                pinOneFrequencyBar = pinOneFrequencyBar.substring(
+                    0, pinOneFrequencyBar.length() - 1);
+                break;
+            case 2:
+                pinTwoFrequencyBar = pinTwoFrequencyBar.substring(
+                    0, pinTwoFrequencyBar.length() - 1);
+                break;
+            default:
+                break;
+        }
     }
 
-    arduboy.clear();
+    // play beep
+    if (arduboy.justPressed(A_BUTTON)) {
+    }
 
-    String title = "BeepBeep";
-    ScreenText(arduboy, title).addToScreenBuffer(ScreenLocation::TopMiddle);
+    // change pin
+    if (arduboy.justPressed(RIGHT_BUTTON)) {
+        switch (currentPin) {
+            case 1:
+                ++currentPin;
+                updateTextPointsToBuffer();
+                break;
+            case 2:
+                --currentPin;
+                updateTextPointsToBuffer();
+                break;
+            default:
+                break;
+        }
+    }
 
-    String pin = "Pin: " + String(currentPin);
-    ScreenText(arduboy, pin).addToScreenBuffer(ScreenLocation::BottomRight);
-    arduboy.display();
+    // undefined
+    if (arduboy.justPressed(LEFT_BUTTON)) {
+    }
+
+    // reset
+    if (arduboy.justPressed(B_BUTTON)) {
+        switch (currentPin) {
+            case 1:
+                pinOneFrequencyBar = "";
+                updateTextPointsToBuffer();
+                break;
+            case 2:
+                pinTwoFrequencyBar = "";
+                updateTextPointsToBuffer();
+                break;
+            default:
+                break;
+        }
+    }
+
+    updateTextPointsToBuffer();
+
+    arduboy.display(CLEAR_BUFFER);
 }

@@ -13,6 +13,8 @@ Usage:
 
 #include <Arduboy2.h>
 
+constexpr int8_t maxScreenWidth = 21;
+
 enum class ScreenLocation {
     TopLeft,
     TopMiddle,
