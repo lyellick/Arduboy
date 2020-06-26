@@ -1,36 +1,45 @@
+/* Beeps at different frequencies depending on what store you are one and what
+ * value.
+ */
+
 #include <Arduboy2.h>
+#include <Arduboy2Beep.h>
 
 Arduboy2 arduboy;
+BeepPin2 beep;
 
 #include "screentext.h"
 
-int8_t currentPin = 1;
+int8_t currentBeepStore = 1;
 String title = "BeepBeep";
-String pinOneFrequencyBar = "";
-String pinTwoFrequencyBar = "";
-constexpr int8_t applicationFrameRate = 30;
+String beepStoreOne = "";
+String beepStoreTwo = "";
+constexpr int8_t applicationFrameRate = 50;
 
 void updateTextPointsToBuffer() {
     ScreenText(arduboy, title).addToScreenBuffer(ScreenLocation::TopMiddle);
 
-    ScreenText(arduboy, "(" + String(currentPin) + ")")
-        .addToScreenBuffer(ScreenLocation::TopRight);
+    // Pin: <pin>
+    ScreenText(arduboy, "Store: " + String(currentBeepStore))
+        .addToScreenBuffer(ScreenLocation::BottomRight);
 
-    switch (currentPin) {
+    switch (currentBeepStore) {
         case 1:
-            ScreenText(arduboy, "[" + pinOneFrequencyBar + "]")
+            ScreenText(arduboy, "[" + beepStoreOne + "]")
                 .addToScreenBuffer(ScreenLocation::Center);
 
-            ScreenText(arduboy, "Frequency: " +
-                                    String(pinOneFrequencyBar.length() * 1000))
+            ScreenText(arduboy,
+                       // Freq: <frequency>
+                       "Freq: " + String(beepStoreOne.length() * 150))
                 .addToScreenBuffer(ScreenLocation::BottomLeft);
             break;
         case 2:
-            ScreenText(arduboy, "[" + pinTwoFrequencyBar + "]")
+            ScreenText(arduboy, "[" + beepStoreTwo + "]")
                 .addToScreenBuffer(ScreenLocation::Center);
 
-            ScreenText(arduboy, "Frequency: " +
-                                    String(pinTwoFrequencyBar.length() * 1000))
+            ScreenText(arduboy,
+                       // Freq: <frequency>
+                       "Freq: " + String(beepStoreTwo.length() * 150))
                 .addToScreenBuffer(ScreenLocation::BottomLeft);
             break;
         default:
@@ -39,9 +48,10 @@ void updateTextPointsToBuffer() {
 }
 
 void setup() {
-    arduboy.setFrameRate(applicationFrameRate);
     arduboy.begin();
-    arduboy.clear();
+    arduboy.setFrameRate(applicationFrameRate);
+
+    beep.begin();
 }
 
 void loop() {
@@ -49,21 +59,23 @@ void loop() {
         return;
     }
 
+    beep.timer();
+
     arduboy.pollButtons();
 
     // increase tone frequency
     if (arduboy.justPressed(UP_BUTTON)) {
-        switch (currentPin) {
+        switch (currentBeepStore) {
             case 1:
-                if (String("[" + pinOneFrequencyBar + "]").length() !=
+                if (String("[" + beepStoreOne + "]").length() !=
                     maxScreenWidth) {
-                    pinOneFrequencyBar += "=";
+                    beepStoreOne += "=";
                 }
                 break;
             case 2:
-                if (String("[" + pinTwoFrequencyBar + "]").length() !=
+                if (String("[" + beepStoreTwo + "]").length() !=
                     maxScreenWidth) {
-                    pinTwoFrequencyBar += "=";
+                    beepStoreTwo += "=";
                 }
                 break;
             default:
@@ -73,15 +85,14 @@ void loop() {
 
     // decrease tone frequency
     if (arduboy.justPressed(DOWN_BUTTON)) {
-        String fullBar = "";
-        switch (currentPin) {
+        switch (currentBeepStore) {
             case 1:
-                pinOneFrequencyBar = pinOneFrequencyBar.substring(
-                    0, pinOneFrequencyBar.length() - 1);
+                beepStoreOne =
+                    beepStoreOne.substring(0, beepStoreOne.length() - 1);
                 break;
             case 2:
-                pinTwoFrequencyBar = pinTwoFrequencyBar.substring(
-                    0, pinTwoFrequencyBar.length() - 1);
+                beepStoreTwo =
+                    beepStoreTwo.substring(0, beepStoreTwo.length() - 1);
                 break;
             default:
                 break;
@@ -90,17 +101,30 @@ void loop() {
 
     // play beep
     if (arduboy.justPressed(A_BUTTON)) {
+        if (beepStoreOne.length() != 0 || beepStoreTwo.length() != 0) {
+            switch (currentBeepStore) {
+                case 1:
+                    beep.tone(beep.freq(beepStoreOne.length() * 150), 15);
+                    break;
+                case 2:
+                    beep.tone(beep.freq(beepStoreTwo.length() * 150), 15);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     // change pin
     if (arduboy.justPressed(RIGHT_BUTTON)) {
-        switch (currentPin) {
+        beep.noTone();
+        switch (currentBeepStore) {
             case 1:
-                ++currentPin;
+                currentBeepStore = 2;
                 updateTextPointsToBuffer();
                 break;
             case 2:
-                --currentPin;
+                currentBeepStore = 1;
                 updateTextPointsToBuffer();
                 break;
             default:
@@ -114,13 +138,14 @@ void loop() {
 
     // reset
     if (arduboy.justPressed(B_BUTTON)) {
-        switch (currentPin) {
+        beep.noTone();
+        switch (currentBeepStore) {
             case 1:
-                pinOneFrequencyBar = "";
+                beepStoreOne = "";
                 updateTextPointsToBuffer();
                 break;
             case 2:
-                pinTwoFrequencyBar = "";
+                beepStoreTwo = "";
                 updateTextPointsToBuffer();
                 break;
             default:
