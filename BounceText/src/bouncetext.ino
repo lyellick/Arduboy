@@ -6,16 +6,24 @@
 
 Arduboy2 arduboy;
 
-enum Direction { UpLeft, UpRight, DownLeft, DownRight, Default };
+enum class Direction { UpLeft, UpRight, DownLeft, DownRight, Default };
 
 Direction direction;
 
-int x_min, x_max, x_center, x_current, y_min, y_max, y_center, y_current, speed;
+uint8_t x_min;
+uint8_t x_max;
+uint8_t x_center;
+uint8_t x_current;
+uint8_t y_min;
+uint8_t y_max;
+uint8_t y_center;
+uint8_t y_current;
+uint8_t speed;
 
 bool paused;
 
-const int CHAR_WIDTH = 6;
-const int CHAR_HEIGHT = 8;
+constexpr uint8_t character_width = 6;
+constexpr uint8_t character_height = 8;
 
 String title = String("Hello, World!");
 
@@ -23,22 +31,27 @@ void setup() {
     arduboy.initRandomSeed();
 
     // title length in pixels
-    int len = title.length() * CHAR_WIDTH;
+    uint8_t len = title.length() * character_width;
 
     // axis minimums
-    x_min = 0, y_min = 0;
+    x_min = 0;
+    y_min = 0;
 
     // axis maximums
-    x_max = WIDTH - len, y_max = HEIGHT - CHAR_HEIGHT;
+    x_max = WIDTH - len;
+    y_max = HEIGHT - character_height;
 
     // axis center
-    x_center = (WIDTH - len) / 2, y_center = (HEIGHT - (CHAR_HEIGHT)) / 2;
+    x_center = (WIDTH - len) / 2;
+    y_center = (HEIGHT - (character_height)) / 2;
 
     // current cursor initialization
-    x_current = random(0, x_min), y_current = random(0, y_max);
+    x_current = random(0, x_min);
+    y_current = random(0, y_max);
 
     // set inital direction
-    direction = (Direction)random(0, Default);
+    direction = static_cast<Direction>(
+        random(0, static_cast<long>(Direction::Default)));
 
     // set speed
     speed = 10;
@@ -50,68 +63,61 @@ void setup() {
     arduboy.clear();
 }
 
-void moveTitle() {
-    arduboy.clear();
-    arduboy.setCursor(x_current, y_current);
-    arduboy.print(title);
-    arduboy.display();
-}
-
 void nextPosition() {
     switch (direction) {
-        case UpLeft:
+        case Direction::UpLeft:
             if (y_current != y_min && x_current != x_min) {
-                y_current--;
-                x_current--;
+                --y_current;
+                --x_current;
             } else {
                 if (y_current == y_min) {
-                    direction = DownLeft;
+                    direction = Direction::DownLeft;
                 }
 
                 if (x_current == x_min) {
-                    direction = UpRight;
+                    direction = Direction::UpRight;
                 }
             }
             break;
-        case UpRight:
+        case Direction::UpRight:
             if (y_current != y_min && x_current != x_max) {
-                y_current--;
-                x_current++;
+                --y_current;
+                ++x_current;
             } else {
                 if (y_current == y_min) {
-                    direction = DownRight;
+                    direction = Direction::DownRight;
                 }
 
                 if (x_current == x_max) {
-                    direction = UpLeft;
+                    direction = Direction::UpLeft;
                 }
             }
             break;
-        case DownLeft:
+        case Direction::DownLeft:
             if (y_current != y_max && x_current != x_min) {
-                y_current++;
-                x_current--;
+                ++y_current;
+                --x_current;
             } else {
                 if (y_current == y_max) {
-                    direction = UpLeft;
+                    direction = Direction::UpLeft;
                 }
 
                 if (x_current == x_min) {
-                    direction = DownRight;
+                    direction = Direction::DownRight;
                 }
             }
             break;
-        case DownRight:
+        case Direction::DownRight:
             if (y_current != y_max && x_current != x_max) {
-                y_current++;
-                x_current++;
+                ++y_current;
+                ++x_current;
             } else {
                 if (y_current == y_max) {
-                    direction = UpRight;
+                    direction = Direction::UpRight;
                 }
 
                 if (x_current == x_max) {
-                    direction = DownLeft;
+                    direction = Direction::DownLeft;
                 }
             }
             break;
@@ -129,11 +135,11 @@ void loop() {
 
     if (arduboy.justPressed(UP_BUTTON)) {
         if (speed > 1) {
-            speed--;
+            --speed;
         }
     }
     if (arduboy.justPressed(DOWN_BUTTON)) {
-        speed += 1;
+        ++speed;
     }
     if (arduboy.justPressed(A_BUTTON)) {
         speed = 10;
@@ -144,7 +150,9 @@ void loop() {
     if (arduboy.everyXFrames(speed)) {
         if (!paused) {
             nextPosition();
-            moveTitle();
+            arduboy.setCursor(x_current, y_current);
+            arduboy.print(title);
+            arduboy.display(CLEAR_BUFFER);
         }
     }
 }
