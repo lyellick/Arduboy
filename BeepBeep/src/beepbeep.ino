@@ -6,7 +6,11 @@ Arduboy2 arduboy;
 
 constexpr int8_t application_frame_rate = 30;
 
+int8_t current_pin;
+
 void setup() {
+    current_pin = 1;
+
     arduboy.setFrameRate(application_frame_rate);
     arduboy.begin();
     arduboy.clear();
@@ -27,20 +31,27 @@ void loop() {
     }
     // change pin
     if (arduboy.justPressed(A_BUTTON)) {
+        switch (current_pin) {
+            case 1:
+                ++current_pin;
+                break;
+            case 2:
+                --current_pin;
+                break;
+            default:
+                break;
+        }
     }
     // reset
     if (arduboy.justPressed(B_BUTTON)) {
     }
 
     arduboy.clear();
-    ScreenText(arduboy, "TL").addToScreenBuffer(ScreenLocation::TopLeft);
-    ScreenText(arduboy, "TM").addToScreenBuffer(ScreenLocation::TopMiddle);
-    ScreenText(arduboy, "TR").addToScreenBuffer(ScreenLocation::TopRight);
-    ScreenText(arduboy, "ML").addToScreenBuffer(ScreenLocation::MiddleLeft);
-    ScreenText(arduboy, "CTR").addToScreenBuffer(ScreenLocation::Center);
-    ScreenText(arduboy, "MR").addToScreenBuffer(ScreenLocation::MiddleRight);
-    ScreenText(arduboy, "BL").addToScreenBuffer(ScreenLocation::BottomLeft);
-    ScreenText(arduboy, "BM").addToScreenBuffer(ScreenLocation::BottomMiddle);
-    ScreenText(arduboy, "BR").addToScreenBuffer(ScreenLocation::BottomRight);
+
+    String title = "BeepBeep";
+    ScreenText(arduboy, title).addToScreenBuffer(ScreenLocation::TopMiddle);
+
+    String pin = "Pin: " + String(current_pin);
+    ScreenText(arduboy, pin).addToScreenBuffer(ScreenLocation::BottomRight);
     arduboy.display();
 }
