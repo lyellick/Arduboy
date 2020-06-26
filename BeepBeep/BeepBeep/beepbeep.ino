@@ -4,10 +4,14 @@ Arduboy2 arduboy;
 
 #include "screentext.h"
 
-constexpr int8_t application_frame_rate = 30;
+constexpr int8_t applicationFrameRate = 30;
+
+int8_t currentPin;
 
 void setup() {
-    arduboy.setFrameRate(application_frame_rate);
+    currentPin = 1;
+
+    arduboy.setFrameRate(applicationFrameRate);
     arduboy.begin();
     arduboy.clear();
 }
@@ -27,20 +31,27 @@ void loop() {
     }
     // change pin
     if (arduboy.justPressed(A_BUTTON)) {
+        switch (currentPin) {
+            case 1:
+                ++currentPin;
+                break;
+            case 2:
+                --currentPin;
+                break;
+            default:
+                break;
+        }
     }
     // reset
     if (arduboy.justPressed(B_BUTTON)) {
     }
 
     arduboy.clear();
-    ScreenText(arduboy, "TL").addToScreenBuffer(ScreenLocation::TopLeft);
-    ScreenText(arduboy, "TM").addToScreenBuffer(ScreenLocation::TopMiddle);
-    ScreenText(arduboy, "TR").addToScreenBuffer(ScreenLocation::TopRight);
-    ScreenText(arduboy, "ML").addToScreenBuffer(ScreenLocation::MiddleLeft);
-    ScreenText(arduboy, "CTR").addToScreenBuffer(ScreenLocation::Center);
-    ScreenText(arduboy, "MR").addToScreenBuffer(ScreenLocation::MiddleRight);
-    ScreenText(arduboy, "BL").addToScreenBuffer(ScreenLocation::BottomLeft);
-    ScreenText(arduboy, "BM").addToScreenBuffer(ScreenLocation::BottomMiddle);
-    ScreenText(arduboy, "BR").addToScreenBuffer(ScreenLocation::BottomRight);
+
+    String title = "BeepBeep";
+    ScreenText(arduboy, title).addToScreenBuffer(ScreenLocation::TopMiddle);
+
+    String pin = "Pin: " + String(currentPin);
+    ScreenText(arduboy, pin).addToScreenBuffer(ScreenLocation::BottomRight);
     arduboy.display();
 }
