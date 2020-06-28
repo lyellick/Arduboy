@@ -9,15 +9,20 @@
  */
 
 #include <Arduboy2.h>
-#include <score.h>
+
+#include "game.h"
 
 Arduboy2 arduboy;
-Score score;
+
+Game game = Game(arduboy);
+
+Screen screen = Screen::Home;
+
+constexpr int8_t frameRate = 60;
 
 void setup() {
-    score = Score();
     arduboy.begin();
-    arduboy.setFrameRate(60);
+    arduboy.setFrameRate(frameRate);
 }
 
 void loop() {
@@ -25,7 +30,7 @@ void loop() {
         return;
     }
 
-    score.trackGameTime();
+    game.trackTime();
 
     arduboy.pollButtons();
 
@@ -53,20 +58,11 @@ void loop() {
     if (arduboy.justPressed(B_BUTTON)) {
     }
 
-    arduboy.setCursor(0, 0);
-    arduboy.print(F("Seconds:    "));
-    arduboy.println(score.seconds);
-    arduboy.print(F("Minutes:    "));
-    arduboy.println(score.minutes);
-    arduboy.print(F("Hours:      "));
-    arduboy.println(score.hours);
-    arduboy.print(F("Days:       "));
-    arduboy.println(score.days);
-    arduboy.print(F("Years:      "));
-    arduboy.println(score.years);
-    arduboy.print(F("Score:      "));
-    arduboy.println(score.getScore(), 3);
-    arduboy.print(F("Multiplier: "));
-    arduboy.println(score.getMultiplier(), 3);
+    switch (screen) {
+        case Screen::Home:
+        default:
+            game.displayHome();
+    }
+
     arduboy.display(CLEAR_BUFFER);
 }
