@@ -53,25 +53,25 @@ class Game {
             if (seconds == 60) {
                 seconds = 0;
                 ++minutes;
-                multiplier += .001;
+                multiplier += .0010;
 
                 // Hour
                 if (minutes == 60) {
                     minutes = 0;
                     ++hours;
-                    multiplier += .01;
+                    multiplier += .001;
 
                     // Day
                     if (hours == 24) {
                         hours = 0;
                         ++days;
-                        multiplier += .1;
+                        multiplier += .01;
 
                         // Year
                         if (days == 365) {
                             days = 0;
                             ++years;
-                            multiplier += 1;
+                            multiplier += .1;
                         }
                     }
                 }
