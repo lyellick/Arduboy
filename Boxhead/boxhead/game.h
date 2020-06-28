@@ -36,7 +36,7 @@ class Game {
     int16_t point = 0;
 
     double score = 0;
-    double multiplier = .001;
+    double multiplier = .0001;
 
     // Ticks years, days, hours, minutes, second
     void incrementTimespan() {
@@ -53,7 +53,7 @@ class Game {
             if (seconds == 60) {
                 seconds = 0;
                 ++minutes;
-                multiplier += .0010;
+                multiplier += .0001;
 
                 // Hour
                 if (minutes == 60) {
