@@ -6,6 +6,9 @@
  *    - Night is a factor so every 10 hours you much interact with him.
  *          (8 hours roughly to sleep)
  *    - Feed, talk to, and play games with Mr. Boxhead.
+ *    - If needs are not met in 24 hours then the rate of gaining a score goes
+ *      down.
+ *    - If multiplier is 0 then you lose.
  *    - Achievements per time period shown as  QR Code:
  *        - "First Second!" - You made it past the first second!
  *    =
@@ -65,10 +68,14 @@ void loop() {
     if (arduboy.justPressed(B_BUTTON)) {
     }
 
-    switch (screen) {
+    switch (game.getCurrentScreen()) {
+        case Screen::GameOver:
+            game.displayGameOver();
+            break;
         case Screen::Home:
         default:
             game.displayHome();
+            break;
     }
 
     arduboy.display(CLEAR_BUFFER);

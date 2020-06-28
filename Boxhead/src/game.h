@@ -1,6 +1,6 @@
 #include <Arduboy2.h>
 
-enum class Screen { Home };
+enum class Screen { Home, GameOver };
 enum class Need { Hungry, Lonely, Bored, Default };
 enum class Status {
     Denial = 0,
@@ -22,12 +22,14 @@ class Game {
     // Displays the current time span of the game
     void displayHome();
 
+    void displayGameOver();
+
     // Toggles status, score, and timespan
     void toggleHUD() { hideHUD = !hideHUD; }
 
     // Checks if he has been feed in the last X hours
     void feed() {
-        if (!isHungry) {
+        if (isHungry) {
             ++trust;
             multiplier += .00005;
             isHungry = !isHungry;
@@ -36,7 +38,7 @@ class Game {
 
     // Checks if he has been talked to in the last X hours
     void talkTo() {
-        if (!isLonely) {
+        if (isLonely) {
             ++trust;
             multiplier += .00005;
             isLonely = !isLonely;
@@ -45,18 +47,22 @@ class Game {
 
     // Checks if he has been entertained in the last X hours
     void entertain() {
-        if (!isBored) {
+        if (isBored) {
             ++trust;
             multiplier += .00005;
             isBored = !isBored;
         }
     }
 
+    // Gets current screen
+    Screen getCurrentScreen() { return screen; };
+
    private:
     Arduboy2 arduboy;
 
     Status status = Status::Denial;
     Need need = Need::Default;
+    Screen screen = Screen::Home;
 
     int16_t seconds = 0;
     int16_t minutes = 0;
@@ -102,19 +108,19 @@ class Game {
 
                     if (hours % 24 == 0) {
                         if (isHungry) {
-                            multiplier -= .0005;
+                            multiplier -= 1;
                         } else {
                             isHungry = !isHungry;
                         }
 
                         if (isBored) {
-                            multiplier -= .0005;
+                            multiplier -= 1;
                         } else {
                             isBored = !isBored;
                         }
 
                         if (isLonely) {
-                            multiplier -= .0005;
+                            multiplier -= 1;
                         } else {
                             isLonely = !isLonely;
                         }
@@ -149,6 +155,9 @@ class Game {
         }
         return digits;
     }
+
+    // Maps the current trust level to status
+    void checkStatus() { status = static_cast<Status>(trust); };
 
     // Prints the current timespan
     void printTimespan() {
@@ -273,7 +282,4 @@ class Game {
                 break;
         }
     };
-
-    // Maps the current trust level to status
-    void checkStatus() { status = static_cast<Status>(trust); };
 };

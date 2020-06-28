@@ -1,15 +1,15 @@
 #include <Arduboy2.h>
 
-enum class Screen { Home };
+enum class Screen { Home, GameOver };
 enum class Need { Hungry, Lonely, Bored, Default };
 enum class Status {
-    Denial,
-    Anger,
-    Bargaining,
-    Depression,
-    Acceptance,
-    Annoyance,
-    Sceptical
+    Denial = 0,
+    Anger = 5,
+    Bargaining = 10,
+    Depression = 15,
+    Acceptance = 20,
+    Annoyance = 25,
+    Sceptical = 30
 };
 
 class Game {
@@ -22,23 +22,47 @@ class Game {
     // Displays the current time span of the game
     void displayHome();
 
+    void displayGameOver();
+
     // Toggles status, score, and timespan
     void toggleHUD() { hideHUD = !hideHUD; }
 
     // Checks if he has been feed in the last X hours
-    void feed() { isHungry = !isHungry; }
+    void feed() {
+        if (isHungry) {
+            ++trust;
+            multiplier += .00005;
+            isHungry = !isHungry;
+        }
+    }
 
     // Checks if he has been talked to in the last X hours
-    void talkTo() { isLonely = !isLonely; }
+    void talkTo() {
+        if (isLonely) {
+            ++trust;
+            multiplier += .00005;
+            isLonely = !isLonely;
+        }
+    }
 
     // Checks if he has been entertained in the last X hours
-    void entertain() { isBored = !isBored; }
+    void entertain() {
+        if (isBored) {
+            ++trust;
+            multiplier += .00005;
+            isBored = !isBored;
+        }
+    }
+
+    // Gets current screen
+    Screen getCurrentScreen() { return screen; };
 
    private:
     Arduboy2 arduboy;
 
     Status status = Status::Denial;
     Need need = Need::Default;
+    Screen screen = Screen::Home;
 
     int16_t seconds = 0;
     int16_t minutes = 0;
@@ -50,6 +74,7 @@ class Game {
     int16_t point = 0;
 
     double score = 0;
+    double trust = 0;
     double multiplier = .0001;
 
     bool hideHUD = false;
@@ -69,7 +94,6 @@ class Game {
             ++seconds;
             ++point;
             score = point * multiplier;
-
             // Minute
             if (seconds == 60) {
                 seconds = 0;
@@ -81,6 +105,26 @@ class Game {
                     minutes = 0;
                     ++hours;
                     multiplier += .001;
+
+                    if (hours % 24 == 0) {
+                        if (isHungry) {
+                            multiplier -= 1;
+                        } else {
+                            isHungry = !isHungry;
+                        }
+
+                        if (isBored) {
+                            multiplier -= 1;
+                        } else {
+                            isBored = !isBored;
+                        }
+
+                        if (isLonely) {
+                            multiplier -= 1;
+                        } else {
+                            isLonely = !isLonely;
+                        }
+                    }
 
                     // Day
                     if (hours == 24) {
@@ -111,6 +155,9 @@ class Game {
         }
         return digits;
     }
+
+    // Maps the current trust level to status
+    void checkStatus() { status = static_cast<Status>(trust); };
 
     // Prints the current timespan
     void printTimespan() {
@@ -166,11 +213,30 @@ class Game {
 
     // Prints Mr.Boxhead's status
     void printStatus() {
+        checkStatus();
         arduboy.setCursor(0, 0);
         switch (status) {
             case Status::Denial:
             default:
                 arduboy.print(F("Denial"));
+                break;
+            case Status::Anger:
+                arduboy.print(F("Anger"));
+                break;
+            case Status::Bargaining:
+                arduboy.print(F("Bargaining"));
+                break;
+            case Status::Depression:
+                arduboy.print(F("Depression"));
+                break;
+            case Status::Acceptance:
+                arduboy.print(F("Acceptance"));
+                break;
+            case Status::Annoyance:
+                arduboy.print(F("Annoyance"));
+                break;
+            case Status::Sceptical:
+                arduboy.print(F("Sceptical"));
                 break;
         }
     }

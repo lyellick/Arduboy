@@ -14,3 +14,7 @@ void Game::displayHome() {
         printTimespan();
     }
 };
+
+void Game::displayGameOver(){
+    // TODO: "Game Over" - show score
+};
