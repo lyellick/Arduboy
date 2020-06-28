@@ -1,7 +1,15 @@
 #include <Arduboy2.h>
 
 enum class Screen { Home };
-enum class Status { Fear, Sceptical };
+enum class Status {
+    Denial,
+    Anger,
+    Bargaining,
+    Depression,
+    Acceptance,
+    Annoyance,
+    Sceptical
+};
 
 class Game {
    public:
@@ -16,7 +24,7 @@ class Game {
    private:
     Arduboy2 arduboy;
 
-    Status status = Status::Sceptical;
+    Status status = Status::Denial;
 
     int16_t seconds = 0;
     int16_t minutes = 0;
@@ -139,9 +147,9 @@ class Game {
     void printStatus() {
         arduboy.setCursor(0, 0);
         switch (status) {
-            case Status::Sceptical:
+            case Status::Denial:
             default:
-                arduboy.print(F("Sceptical"));
+                arduboy.print(F("Denial"));
                 break;
         }
     }
