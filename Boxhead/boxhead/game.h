@@ -62,8 +62,10 @@ class Game {
         ++frames;
 
         // Second
-        if (frames == 60) {
-            frames = 0;
+        if (frames % 60 == 0) {
+            if (frames > 90) {
+                frames = 0;
+            }
             ++seconds;
             ++point;
             score = point * multiplier;
@@ -178,32 +180,32 @@ class Game {
     void printNeeds() {
         switch (need) {
             case Need::Bored:
-                if (isBored && (frames > 0 && frames < 20)) {
+                if (isBored && (frames > 0 && frames < 30)) {
                     arduboy.setCursor(0, HEIGHT - 8);
                     arduboy.print("Bored");
                 }
 
-                if (frames == 20) {
+                if (frames == 30) {
                     need = Need::Hungry;
                 }
                 break;
             case Need::Hungry:
-                if (isHungry && (frames > 20 && frames < 40)) {
+                if (isHungry && (frames > 30 && frames < 60)) {
                     arduboy.setCursor(0, HEIGHT - 8);
                     arduboy.print("Hungry");
                 }
 
-                if (frames == 40) {
+                if (frames == 60) {
                     need = Need::Lonely;
                 }
                 break;
             case Need::Lonely:
-                if (isLonely && (frames > 40 && frames < 60)) {
+                if (isLonely && (frames > 60 && frames < 90)) {
                     arduboy.setCursor(0, HEIGHT - 8);
                     arduboy.print("Lonely");
                 }
 
-                if (frames == 59) {
+                if (frames == 90) {
                     need = Need::Default;
                 }
                 break;

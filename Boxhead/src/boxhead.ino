@@ -23,8 +23,6 @@ Screen screen = Screen::Home;
 
 constexpr int8_t frameRate = 60;
 
-int counter = 0;
-
 void setup() {
     arduboy.begin();
     arduboy.setFrameRate(frameRate);
