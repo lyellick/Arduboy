@@ -3,6 +3,8 @@
  * Version 1:
  *    - He lives till the player closes the game.
  *    - Score is based off the time you keep Mr. Boxhead alive.
+ *    - Night is a factor so every 10 hours you much interact with him.
+ *          (8 hours roughly to sleep)
  *    - Achievements per time period shown as  QR Code:
  *        - "First Second!" - You made it past the first second!
  *    =
