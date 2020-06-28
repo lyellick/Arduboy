@@ -5,6 +5,7 @@
  *    - Score is based off the time you keep Mr. Boxhead alive.
  *    - Night is a factor so every 10 hours you much interact with him.
  *          (8 hours roughly to sleep)
+ *    - Feed, talk to, and play games with Mr. Boxhead.
  *    - Achievements per time period shown as  QR Code:
  *        - "First Second!" - You made it past the first second!
  *    =
@@ -22,8 +23,6 @@ Screen screen = Screen::Home;
 
 constexpr int8_t frameRate = 60;
 
-bool hideHUD = false;
-
 void setup() {
     arduboy.begin();
     arduboy.setFrameRate(frameRate);
@@ -40,19 +39,22 @@ void loop() {
 
     // Input: undefined
     if (arduboy.justPressed(UP_BUTTON)) {
+        game.entertain();
     }
 
-    // Input: undefined
+    // Input: Feed
     if (arduboy.justPressed(RIGHT_BUTTON)) {
+        game.feed();
     }
 
-    // Input: undefined
+    // Input: Hide/show the HUD
     if (arduboy.justPressed(DOWN_BUTTON)) {
-        hideHUD = !hideHUD;
+        game.toggleHUD();
     }
 
-    // Input: undefined
+    // Input: Talk
     if (arduboy.justPressed(LEFT_BUTTON)) {
+        game.talkTo();
     }
 
     // Input: undefined
@@ -66,7 +68,7 @@ void loop() {
     switch (screen) {
         case Screen::Home:
         default:
-            game.displayHome(hideHUD);
+            game.displayHome();
     }
 
     arduboy.display(CLEAR_BUFFER);

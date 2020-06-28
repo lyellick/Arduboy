@@ -1,6 +1,7 @@
 #include <Arduboy2.h>
 
 enum class Screen { Home };
+enum class Need { Hungry, Lonely, Bored, Default };
 enum class Status {
     Denial,
     Anger,
@@ -19,12 +20,25 @@ class Game {
     void trackTime();
 
     // Displays the current time span of the game
-    void displayHome(bool hideHUD);
+    void displayHome();
+
+    // Toggles status, score, and timespan
+    void toggleHUD() { hideHUD = !hideHUD; }
+
+    // Checks if he has been feed in the last X hours
+    void feed() { isHungry = !isHungry; }
+
+    // Checks if he has been talked to in the last X hours
+    void talkTo() { isLonely = !isLonely; }
+
+    // Checks if he has been entertained in the last X hours
+    void entertain() { isBored = !isBored; }
 
    private:
     Arduboy2 arduboy;
 
     Status status = Status::Denial;
+    Need need = Need::Default;
 
     int16_t seconds = 0;
     int16_t minutes = 0;
@@ -37,6 +51,11 @@ class Game {
 
     double score = 0;
     double multiplier = .0001;
+
+    bool hideHUD = false;
+    bool isHungry = true;
+    bool isLonely = true;
+    bool isBored = true;
 
     // Ticks years, days, hours, minutes, second
     void incrementTimespan() {
@@ -153,4 +172,36 @@ class Game {
                 break;
         }
     }
+
+    // Prints the missing needs such as being hungry, feeling lonely, or
+    // bored.
+    void printNeeds() {
+        switch (need) {
+            case Need::Bored:
+                if (isBored) {
+                    arduboy.setCursor(0, HEIGHT - 8);
+                    arduboy.print("Bored");
+                }
+                need = Need::Hungry;
+                break;
+            case Need::Hungry:
+                if (isHungry) {
+                    arduboy.setCursor(0, HEIGHT - 8);
+                    arduboy.print("Hungry");
+                }
+                need = Need::Lonely;
+                break;
+            case Need::Lonely:
+                if (isLonely) {
+                    arduboy.setCursor(0, HEIGHT - 8);
+                    arduboy.print("Lonely");
+                }
+                need = Need::Default;
+                break;
+            case Need::Default:
+            default:
+                need = Need::Bored;
+                break;
+        }
+    };
 };

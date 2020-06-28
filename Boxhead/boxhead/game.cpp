@@ -6,10 +6,11 @@ Game::Game(Arduboy2 arduboy) : arduboy(arduboy){};
 
 void Game::trackTime() { incrementTimespan(); };
 
-void Game::displayHome(bool hideHUD) {
+void Game::displayHome() {
     if (!hideHUD) {
         printStatus();
         printScore();
+        printNeeds();
         printTimespan();
     }
 };
