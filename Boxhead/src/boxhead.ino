@@ -20,6 +20,8 @@ Screen screen = Screen::Home;
 
 constexpr int8_t frameRate = 60;
 
+bool hideHUD = false;
+
 void setup() {
     arduboy.begin();
     arduboy.setFrameRate(frameRate);
@@ -44,6 +46,7 @@ void loop() {
 
     // Input: undefined
     if (arduboy.justPressed(DOWN_BUTTON)) {
+        hideHUD = !hideHUD;
     }
 
     // Input: undefined
@@ -61,7 +64,7 @@ void loop() {
     switch (screen) {
         case Screen::Home:
         default:
-            game.displayHome();
+            game.displayHome(hideHUD);
     }
 
     arduboy.display(CLEAR_BUFFER);

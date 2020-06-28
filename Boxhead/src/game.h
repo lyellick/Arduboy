@@ -1,6 +1,7 @@
 #include <Arduboy2.h>
 
 enum class Screen { Home };
+enum class Status { Fear, Sceptical };
 
 class Game {
    public:
@@ -10,10 +11,12 @@ class Game {
     void trackTime();
 
     // Displays the current time span of the game
-    void displayHome();
+    void displayHome(bool hideHUD);
 
    private:
     Arduboy2 arduboy;
+
+    Status status = Status::Sceptical;
 
     int16_t seconds = 0;
     int16_t minutes = 0;
@@ -126,12 +129,20 @@ class Game {
 
     // Prints the current score
     void printScore() {
-        arduboy.setCursor(0, 0);
-        arduboy.print(multiplier, 3);
-
         int16_t map = static_cast<int16_t>(score);
         int8_t digits = countDigits(map);
         arduboy.setCursor(WIDTH - (digits * 6), 0);
         arduboy.print(map);
+    }
+
+    // Prints Mr.Boxhead's status
+    void printStatus() {
+        arduboy.setCursor(0, 0);
+        switch (status) {
+            case Status::Sceptical:
+            default:
+                arduboy.print(F("Sceptical"));
+                break;
+        }
     }
 };
