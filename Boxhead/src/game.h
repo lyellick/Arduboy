@@ -78,6 +78,7 @@ class Game {
     double multiplier = .0001;
 
     bool hideHUD = false;
+    bool gameOver = false;
     bool isHungry = true;
     bool isLonely = true;
     bool isBored = true;
@@ -156,6 +157,13 @@ class Game {
         return digits;
     }
 
+    // Counts the characters in a string
+    int8_t countChars(char* string) {
+        int8_t i = 0;
+        while (string[i]) ++i;
+        return i;
+    }
+
     // Maps the current trust level to status
     void checkStatus() { status = static_cast<Status>(trust); };
 
@@ -215,31 +223,29 @@ class Game {
     void printStatus() {
         checkStatus();
         arduboy.setCursor(0, 0);
+        arduboy.print(getStatus());
+    };
+
+    // Gets status enum as string
+    char* getStatus() {
         switch (status) {
             case Status::Denial:
             default:
-                arduboy.print(F("Denial"));
-                break;
+                return "Denial";
             case Status::Anger:
-                arduboy.print(F("Anger"));
-                break;
+                return "Anger";
             case Status::Bargaining:
-                arduboy.print(F("Bargaining"));
-                break;
+                return "Bargaining";
             case Status::Depression:
-                arduboy.print(F("Depression"));
-                break;
+                return "Depression";
             case Status::Acceptance:
-                arduboy.print(F("Acceptance"));
-                break;
+                return "Acceptance";
             case Status::Annoyance:
-                arduboy.print(F("Annoyance"));
-                break;
+                return "Annoyance";
             case Status::Sceptical:
-                arduboy.print(F("Sceptical"));
-                break;
+                return "Sceptical";
         }
-    }
+    };
 
     // Prints the missing needs such as being hungry, feeling lonely, or
     // bored.

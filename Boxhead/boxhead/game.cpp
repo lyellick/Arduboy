@@ -15,6 +15,18 @@ void Game::displayHome() {
     }
 };
 
-void Game::displayGameOver(){
-    // TODO: "Game Over" - show score
+void Game::displayGameOver() {
+    int8_t statusLength = countChars(getStatus());
+    int16_t endScore = static_cast<int16_t>(score);
+    int16_t endScoreLength = countDigits(endScore);
+
+    arduboy.setCursor((WIDTH - (9 * 6)) / 2, 18);
+    arduboy.println(F("Game Over"));
+
+    arduboy.setCursor((WIDTH - ((statusLength + 6) * 6)) / 2, 28);
+    arduboy.print(F("Felt: "));
+    arduboy.print(getStatus());
+
+    arduboy.setCursor((WIDTH - (endScoreLength * 6)) / 2, 38);
+    arduboy.println(endScore);
 };
