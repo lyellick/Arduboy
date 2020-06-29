@@ -54,6 +54,11 @@ class Game {
         }
     }
 
+    // Checks if the multiplier is less than zero, which results in a game over
+    void checkMultiplier() {
+        if (multiplier <= 0) screen = Screen::GameOver;
+    }
+
     // Gets current screen
     Screen getCurrentScreen() { return screen; };
 
@@ -100,13 +105,14 @@ class Game {
                 seconds = 0;
                 ++minutes;
                 multiplier += .0001;
-
                 // Hour
                 if (minutes == 60) {
                     minutes = 0;
                     ++hours;
                     multiplier += .001;
 
+                    // Lower multiplier if not fed, talk to, or entertained in
+                    // the last 24 hours
                     if (hours % 24 == 0) {
                         if (isHungry) {
                             multiplier -= 1;
@@ -226,27 +232,6 @@ class Game {
         arduboy.print(getStatus());
     };
 
-    // Gets status enum as string
-    char* getStatus() {
-        switch (status) {
-            case Status::Denial:
-            default:
-                return "Denial";
-            case Status::Anger:
-                return "Anger";
-            case Status::Bargaining:
-                return "Bargaining";
-            case Status::Depression:
-                return "Depression";
-            case Status::Acceptance:
-                return "Acceptance";
-            case Status::Annoyance:
-                return "Annoyance";
-            case Status::Sceptical:
-                return "Sceptical";
-        }
-    };
-
     // Prints the missing needs such as being hungry, feeling lonely, or
     // bored.
     void printNeeds() {
@@ -286,6 +271,27 @@ class Game {
                 break;
             default:
                 break;
+        }
+    };
+
+    // Gets status enum as string
+    char* getStatus() {
+        switch (status) {
+            case Status::Denial:
+            default:
+                return "Denial";
+            case Status::Anger:
+                return "Anger";
+            case Status::Bargaining:
+                return "Bargaining";
+            case Status::Depression:
+                return "Depression";
+            case Status::Acceptance:
+                return "Acceptance";
+            case Status::Annoyance:
+                return "Annoyance";
+            case Status::Sceptical:
+                return "Sceptical";
         }
     };
 };

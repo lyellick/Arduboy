@@ -68,6 +68,7 @@ void loop() {
     if (arduboy.justPressed(B_BUTTON)) {
     }
 
+    game.checkMultiplier();
     switch (game.getCurrentScreen()) {
         case Screen::GameOver:
             game.displayGameOver();
