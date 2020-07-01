@@ -4,7 +4,11 @@
 
 #include <Arduboy2.h>
 
+#include "game.h"
+
 Arduboy2 arduboy;
+
+Game game = Game(arduboy);
 
 constexpr int8_t frameRate = 60;
 
