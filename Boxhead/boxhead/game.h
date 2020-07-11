@@ -1,6 +1,9 @@
 #include <Arduboy2.h>
 
-enum class Screen { Home, GameOver };
+enum class Screen {
+    Home,
+    GameOver,
+};
 enum class Need { Hungry, Lonely, Bored, Default };
 enum class Status {
     Denial = 0,
@@ -239,7 +242,7 @@ class Game {
             case Need::Bored:
                 if (isBored && (frames > 0 && frames < 30)) {
                     arduboy.setCursor(0, HEIGHT - 8);
-                    arduboy.print("Bored");
+                    arduboy.print(F("Bored"));
                 }
 
                 if (frames == 30) {
@@ -249,7 +252,7 @@ class Game {
             case Need::Hungry:
                 if (isHungry && (frames > 30 && frames < 60)) {
                     arduboy.setCursor(0, HEIGHT - 8);
-                    arduboy.print("Hungry");
+                    arduboy.print(F("Hungry"));
                 }
 
                 if (frames == 60) {
@@ -259,7 +262,7 @@ class Game {
             case Need::Lonely:
                 if (isLonely && (frames > 60 && frames < 90)) {
                     arduboy.setCursor(0, HEIGHT - 8);
-                    arduboy.print("Lonely");
+                    arduboy.print(F("Lonely"));
                 }
 
                 if (frames == 90) {
