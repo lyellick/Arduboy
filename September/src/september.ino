@@ -16,11 +16,8 @@ Arduboy2 arduboy;
 Game game = Game(arduboy);
 
 constexpr int8_t frameRate = 60;
-bool started;
 
 void setup() {
-    started = false;
-
     arduboy.begin();
     arduboy.setFrameRate(frameRate);
 }
@@ -57,8 +54,5 @@ void loop() {
     }
 
     arduboy.display(CLEAR_BUFFER);
-
-    if (!started) {
-        arduboy.drawSlowXYBitmap(0, 0, titleScreen, WIDTH, HEIGHT, WHITE);
-    }
+    arduboy.drawSlowXYBitmap(0, 0, titleScreen, WIDTH, HEIGHT, WHITE);
 }
