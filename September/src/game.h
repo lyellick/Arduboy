@@ -10,7 +10,7 @@ class Game {
     int8_t sequenceLength = 0;
     int8_t sequenceIndex = 0;
     int8_t sequenceEndBound = 0;
-    int8_t sequenceSpeed = 100;
+    int8_t sequenceSpeed = 60;
 
     // Gets current screen
     Screen getCurrentScreen() { return screen; };
@@ -35,32 +35,53 @@ class Game {
 
     Screen screen = Screen::Title;
 
-    bool presentedNextSequence = false;
+    bool presentedSequence = false;
 
+    // Checks the current input in next index of sequence
     void validateInputInSequence(int16_t button) {
         int16_t expectedButton = sequence[sequenceIndex];
         if (button == expectedButton) {
             ++sequenceIndex;
-            presentedNextSequence = false;
         } else {
             screen = Screen::Loose;
         }
     };
 
-    void showCurrentSequence() {
+    // Shows the sequence to remember
+    void showSequence() {
         if (arduboy.frameCount % sequenceSpeed != 0) {
-            arduboy.setCursor(0, 0);
-            arduboy.print(sequence[sequenceEndBound]);
+            switch (sequence[sequenceEndBound]) {
+                case UP_BUTTON:
+                    printCenter("UP");
+                    break;
+                case RIGHT_BUTTON:
+                    printCenter("RIGHT");
+                    break;
+                case DOWN_BUTTON:
+                    printCenter("DOWN");
+                    break;
+                case LEFT_BUTTON:
+                    printCenter("LEFT");
+                    break;
+                case A_BUTTON:
+                    printCenter("A");
+                    break;
+                case B_BUTTON:
+                    printCenter("B");
+                    break;
+                default:
+                    break;
+            }
         } else {
-            if (sequenceEndBound != sequenceIndex) {
+            if (sequenceEndBound < sequenceLength - 1) {
                 ++sequenceEndBound;
             } else {
-                presentedNextSequence = true;
-                sequenceEndBound = 0;
+                presentedSequence = true;
             }
         }
     };
 
+    // Generates a new sequence
     void generateSequence() {
         for (size_t i = 0; i < sequenceLength; ++i) {
             int8_t rand = random(6);
@@ -89,11 +110,26 @@ class Game {
         }
     };
 
+    // Resets all game variables to orginial state
     void resetGame() {
-        presentedNextSequence = false;
+        presentedSequence = false;
+        sequenceEndBound = 0;
         sequenceIndex = 0;
         sequence = new int16_t[sequenceLength];
         generateSequence();
         screen = Screen::Title;
     };
+
+    // Counts the characters in a string
+    int8_t countChars(char* string) {
+        int8_t i = 0;
+        while (string[i]) ++i;
+        return i;
+    }
+
+    // Gets length of text and centers on screen
+    void printCenter(char* text) {
+        arduboy.setCursor((WIDTH - (countChars(text) * 6)) / 2, HEIGHT / 2);
+        arduboy.print(text);
+    }
 };

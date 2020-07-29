@@ -19,13 +19,15 @@ void Game::displayTitle(bool anyKeyPressed) {
 
 void Game::displayBoard(int16_t button) {
     if (sequenceIndex < sequenceLength) {
-        if (arduboy.justPressed(button)) {
+        if (arduboy.justPressed(button) && presentedSequence) {
             validateInputInSequence(button);
+        } else if (!presentedSequence) {
+            showSequence();
         } else {
-            if (!presentedNextSequence) {
-                showCurrentSequence();
-            }
+            arduboy.setCursor((WIDTH - (17 * 6)) / 2, HEIGHT / 2);
+            arduboy.println(F("Did You Remember?"));
         }
+
     } else {
         screen = Screen::Win;
     }
