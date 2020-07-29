@@ -9,6 +9,8 @@ class Game {
     int16_t* sequence;
     int8_t sequenceLength = 0;
     int8_t sequenceIndex = 0;
+    int8_t sequenceEndBound = 0;
+    int8_t sequenceSpeed = 100;
 
     // Gets current screen
     Screen getCurrentScreen() { return screen; };
@@ -33,27 +35,29 @@ class Game {
 
     Screen screen = Screen::Title;
 
-    void validateInputInSequence(int16_t button) {
-        if (sequenceIndex < sequenceLength) {
-            int16_t expectedButton = sequence[sequenceIndex];
-            arduboy.setCursor(WIDTH - 32, 0);
-            arduboy.print(expectedButton);
-            for (size_t i = 0; i < sequenceIndex; ++i) {
-                arduboy.setCursor(0, i * 8);
-                arduboy.print(sequence[i]);
-            }
+    bool presentedNextSequence = false;
 
-            if (arduboy.justPressed(button)) {
-                if (button != 0) {
-                    if (button == expectedButton) {
-                        ++sequenceIndex;
-                    } else {
-                        screen = Screen::Loose;
-                    }
-                }
-            }
+    void validateInputInSequence(int16_t button) {
+        int16_t expectedButton = sequence[sequenceIndex];
+        if (button == expectedButton) {
+            ++sequenceIndex;
+            presentedNextSequence = false;
         } else {
-            screen = Screen::Win;
+            screen = Screen::Loose;
+        }
+    };
+
+    void showCurrentSequence() {
+        if (arduboy.frameCount % sequenceSpeed != 0) {
+            arduboy.setCursor(0, 0);
+            arduboy.print(sequence[sequenceEndBound]);
+        } else {
+            if (sequenceEndBound != sequenceIndex) {
+                ++sequenceEndBound;
+            } else {
+                presentedNextSequence = true;
+                sequenceEndBound = 0;
+            }
         }
     };
 
@@ -86,6 +90,7 @@ class Game {
     };
 
     void resetGame() {
+        presentedNextSequence = false;
         sequenceIndex = 0;
         sequence = new int16_t[sequenceLength];
         generateSequence();

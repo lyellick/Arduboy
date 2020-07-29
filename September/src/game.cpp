@@ -17,7 +17,19 @@ void Game::displayTitle(bool anyKeyPressed) {
     }
 };
 
-void Game::displayBoard(int16_t button) { validateInputInSequence(button); };
+void Game::displayBoard(int16_t button) {
+    if (sequenceIndex < sequenceLength) {
+        if (arduboy.justPressed(button)) {
+            validateInputInSequence(button);
+        } else {
+            if (!presentedNextSequence) {
+                showCurrentSequence();
+            }
+        }
+    } else {
+        screen = Screen::Win;
+    }
+};
 
 void Game::displayLooseScreen(bool anyKeyPressed) {
     if (anyKeyPressed) {
