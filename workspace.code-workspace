@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"path": "September"
+		},
+		{
+			"name": "BounceText",
+			"path": "BounceText"
+		},
+		{
+			"name": "Boxhead",
+			"path": "Boxhead"
+		},
+		{
+			"name": "Locomotion",
+			"path": "Locomotion"
+		},
+		{
+			"name": "Bonsai",
+			"path": "Bonsai"
+		},
+		{
+			"name": "BeepBeep",
+			"path": "BeepBeep"
+		}
+	],
+	"settings": {}
+}
