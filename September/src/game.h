@@ -115,6 +115,7 @@ class Game {
         presentedSequence = false;
         sequenceEndBound = 0;
         sequenceIndex = 0;
+        delete[] sequence;
         sequence = new int16_t[sequenceLength];
         generateSequence();
         screen = Screen::Title;
